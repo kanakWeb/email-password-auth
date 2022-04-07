@@ -6,6 +6,7 @@ import {
   sendEmailVerification,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
 import app from "./firebase.init";
 import Form from "react-bootstrap/Form";
@@ -17,10 +18,16 @@ const auth = getAuth(app);
 function App() {
   const [validated, setValidated] = useState(false);
   const [register, setRegister] = useState(false);
-
+const[name,setName]=useState('')
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+
+const handleNameBlur=(event)=>{
+  const nameCatch=event.target.value
+  console.log(nameCatch);
+}
 
   const handleEmailBlur = (event) => {
     setEmail(event.target.value);
@@ -65,6 +72,7 @@ function App() {
           setEmail("");
           setPassword("");
           verifyEmail();
+          setUserName()
         })
         .catch((error) => {
           console.error(error);
@@ -73,6 +81,21 @@ function App() {
     }
     event.preventDefault();
   };
+
+
+  const setUserName=()=>{
+    updateProfile(auth.currentUser,{
+      displayName:name
+    })
+    .then(()=>{
+      console.log("user name");
+    })
+    .catch(error=>{
+      setError(error.message)
+    })
+
+  }
+
  const handleForgetPassword=()=>{
    sendPasswordResetEmail(auth,email)
    .then(()=>{
@@ -96,6 +119,19 @@ function App() {
           validated={validated}
           onSubmit={handleFormSubmit}
         >
+          {!register && <Form.Group className="mb-3" controlId="formBasicEmail">
+            <Form.Label>Your Name</Form.Label>
+            <Form.Control
+              onBlur={handleNameBlur}
+              type="text"
+              placeholder="Enter name"
+              required
+            />
+          
+            <Form.Control.Feedback type="invalid">
+              Please Enter Your name.
+            </Form.Control.Feedback>
+          </Form.Group>}
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Email address</Form.Label>
             <Form.Control
@@ -137,7 +173,7 @@ function App() {
             </Form.Group>
           </Form.Group>
 
-          <p className="text-danger">{error?error+"😵😵":"Secuessfull yout log in 😍😍"}</p>
+          <p className="text-danger">{error?error+"😵😵":"Secuessfull you 😍😍"}</p>
           <Button onClick={handleForgetPassword} variant="link">Forget password</Button>
           <Button className="bg-secondary" type="submit">
             {register ? "Login" : "Regiester"}
