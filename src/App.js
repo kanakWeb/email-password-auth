@@ -13,6 +13,7 @@ const auth = getAuth(app);
 
 function App() {
   const [validated, setValidated] = useState(false);
+  const [register,setRegister]=useState(false)
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -20,6 +21,11 @@ function App() {
   const handleEmailBlur = (event) => {
     setEmail(event.target.value);
   };
+
+  const handleCheck=(event)=>{
+   setRegister(event.target.checked);
+  }
+
 
   const handlePasswordBlur = (event) => {
     setPassword(event.target.value);
@@ -43,13 +49,14 @@ function App() {
       .then((res) => {
         const user = res.user;
         console.log(user);
-        setPassword("");
         setEmail("");
+        setPassword("");
       })
       .catch((error) => {
         console.error(error);
-        // setError(error.message);
+        setError(error.message);
       });
+
     // console.log(event.target.value);
     /* console.log("form submit", email, password); */
     event.preventDefault();
@@ -58,7 +65,7 @@ function App() {
   return (
     <div className="App">
       <div className="userRegistration w-50 mx-auto">
-        <h3 className="text-secondary">Please Register Baby!!</h3>
+        <h3 className="text-secondary">Please {register?"Login":'Register'} Baby!!</h3>
         <Form
           noValidate
           validated={validated}
@@ -97,14 +104,14 @@ function App() {
               className="mb-3"
               controlId="formBasicCheckbox"
             >
-              <Form.Check type="checkbox" label="Check me out" />
+              <Form.Check onChange={handleCheck} type="checkbox" label="Already registered?" />
             </Form.Group>
           </Form.Group>
 
           <p className="text-danger">{error}</p>
 
           <Button className="bg-secondary" type="submit">
-            Register
+           {register?"Login":"Regiester"}
           </Button>
         </Form>
       </div>
